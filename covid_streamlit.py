@@ -17,6 +17,16 @@ with st.sidebar:
     show_hover = st.radio('Show Hover Data:', ['none', 'minimal', 'full'], 2)
     show_spike = st.checkbox('Show Spikeline:', False)
 
+    st.markdown("""
+
+***
+The source code for this streamlit version of my covid case app is [available on github](https://github.com/astrowonk/covid_streamlit). 
+
+This version relies on a small sqlite database hosted on github. It has limited county data and will not regularly update. Check out the [live version of this which runs in Dash](https://marcoshuerta.com/dash/covid/).    
+
+
+    """)
+
 if data_type == 'Cases':
     y_axis_label = "New Reported Cases Per 100,000"
     y_variable = 'rolling_case_growth_per_100K'
@@ -28,9 +38,7 @@ if data_type == 'Cases':
 else:
     y_axis_label = "New Reported Deaths Per 100,000"
     y_variable = 'rolling_new_deaths_per_100K'
-    hover_data = [
-        'date', 'rolling_new_deaths_per_100K', 'new_deaths_per_100K'
-    ]
+    hover_data = ['date', 'rolling_new_deaths_per_100K', 'new_deaths_per_100K']
     cases = False
 
 states_and_counties = states + counties
