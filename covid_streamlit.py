@@ -72,7 +72,7 @@ with st.sidebar:
 ***
 The source code for this streamlit version of my covid case app is [available on github](https://github.com/astrowonk/covid_streamlit). 
 
-This version relies on a small sqlite database hosted on github. It has limited county data and will not regularly update. Check out the [live version of this which runs in Dash](https://marcoshuerta.com/dash/covid/).    
+This streamlit data shares data with the [Dash version](https://marcoshuerta.com/dash/covid/), via a simple private REST API implementation running [on a feature branch](https://github.com/astrowonk/covid_dash/tree/api).    
 
 
     """)
