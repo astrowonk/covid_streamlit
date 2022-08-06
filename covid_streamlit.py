@@ -62,7 +62,7 @@ with st.sidebar:
     states = st.multiselect('State:', data_load_wrapper('all_states'),
                             ['Virginia'])
     counties = st.multiselect('Counties:', data_load_wrapper('all_counties'),
-                              ['Arlington, Virginia'])
+                              ['Harris, Texas'])
     data_type = st.selectbox('Data Type:', ['Cases', 'Deaths'])
     rolling_days = st.slider('Rolling Average Days:', 1, 14, 7)
     show_hover = st.radio('Show Hover Data:', ['none', 'minimal', 'full'], 2)
