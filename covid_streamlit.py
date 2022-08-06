@@ -42,7 +42,7 @@ myDataLoader = apiLoader()
 
 
 @st.experimental_singleton()
-def memo_wrapper(data_type, regions=None):
+def data_load_wrapper(data_type, regions=None):
 
     if data_type == 'all_counties':
         return myDataLoader.all_counties()
@@ -59,9 +59,10 @@ st.set_page_config(page_title="Covid Case Growth Plots", layout='wide')
 st.title('Covid Case Growth Plots')
 ## layout
 with st.sidebar:
-    states = st.multiselect('State:', memo_wrapper('all_states'), ['Virginia'])
-    counties = st.multiselect('Counties:', memo_wrapper('all_counties'),
-                              ['Henrico, Virginia'])
+    states = st.multiselect('State:', data_load_wrapper('all_states'),
+                            ['Virginia'])
+    counties = st.multiselect('Counties:', data_load_wrapper('all_counties'),
+                              ['Arlington, Virginia'])
     data_type = st.selectbox('Data Type:', ['Cases', 'Deaths'])
     rolling_days = st.slider('Rolling Average Days:', 1, 14, 7)
     show_hover = st.radio('Show Hover Data:', ['none', 'minimal', 'full'], 2)
@@ -98,18 +99,18 @@ if len(states_and_counties) > 15:
     states_and_counties = states_and_counties[:15]
 
 if cases:
-    dff = memo_wrapper('cases',
-                       states_and_counties).sort_values(["date", "state"
-                                                         ]).reset_index()
+    dff = data_load_wrapper('cases',
+                            states_and_counties).sort_values(["date", "state"
+                                                              ]).reset_index()
     dff["rolling_case_growth_per_100K"] = dff.groupby(
         'state')['case_growth_per_100K'].transform(
             lambda s: s.rolling(rolling_days, min_periods=1).mean())
     dff["rolling_new_cases"] = dff.groupby('state')['New Cases'].transform(
         lambda s: s.rolling(rolling_days, min_periods=1).mean())
 else:
-    dff = memo_wrapper('deaths',
-                       states_and_counties).sort_values(["date", "state"
-                                                         ]).reset_index()
+    dff = data_load_wrapper('deaths',
+                            states_and_counties).sort_values(["date", "state"
+                                                              ]).reset_index()
     dff["rolling_new_deaths_per_100K"] = dff.groupby(
         'state')['new_deaths_per_100K'].transform(
             lambda s: s.rolling(rolling_days, min_periods=1).mean())
