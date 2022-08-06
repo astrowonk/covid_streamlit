@@ -1,16 +1,66 @@
 import streamlit as st
 import plotly.express as px
 
-from dataLoader import dataLoader
-myDataLoader = dataLoader()
+from urllib.parse import quote
+import requests
+import pandas as pd
+
+api_base_url = st.secrets['api_base_url']
+
+
+class apiLoader:
+    @staticmethod
+    def process_json(json):
+        df = pd.DataFrame(json)
+        df['date'] = pd.to_datetime(df['date'])
+        return df
+
+    def all_counties(self):
+        url = f"{api_base_url}/all_counties"
+        response = requests.get(url)
+        return response.json()
+
+    def all_states(self):
+        url = f"{api_base_url}/all_states"
+        response = requests.get(url)
+        return response.json()
+
+    def get_cases(self, states):
+        state_list = quote("+".join(states))
+        url = f"{api_base_url}/cases/{state_list}"
+        response = requests.get(url)
+        return self.process_json(response.json())
+
+    def get_deaths(self, states):
+        state_list = quote("+".join(states))
+        url = f"{api_base_url}/deaths/{state_list}"
+        response = requests.get(url)
+        return self.process_json(response.json())
+
+
+myDataLoader = apiLoader()
+
+
+@st.experimental_singleton()
+def memo_wrapper(data_type, regions=None):
+
+    if data_type == 'all_counties':
+        return myDataLoader.all_counties()
+    elif data_type == 'all_states':
+        return myDataLoader.all_states()
+    elif data_type == 'cases':
+        return myDataLoader.get_cases(regions)
+    elif data_type == 'deaths':
+        return myDataLoader.get_deaths(regions)
+
 
 st.set_page_config(page_title="Covid Case Growth Plots", layout='wide')
 
 st.title('Covid Case Growth Plots')
 ## layout
 with st.sidebar:
-    states = st.multiselect('State:', myDataLoader.all_states(), ['Virginia'])
-    counties = st.multiselect('Counties:', myDataLoader.all_counties(),
+    states = st.multiselect('State:', memo_wrapper('all_states'), ['Virginia'])
+    counties = st.multiselect('Counties:', memo_wrapper('all_counties'),
                               ['Henrico, Virginia'])
     data_type = st.selectbox('Data Type:', ['Cases', 'Deaths'])
     rolling_days = st.slider('Rolling Average Days:', 1, 14, 7)
@@ -46,18 +96,20 @@ states_and_counties = states + counties
 if len(states_and_counties) > 15:
     #quietly limiting the length of the list to 15
     states_and_counties = states_and_counties[:15]
-dff = myDataLoader.get_data(states_and_counties,
-                            cases=cases).sort_values(["date",
-                                                      "state"]).reset_index()
 
 if cases:
+    dff = memo_wrapper('cases',
+                       states_and_counties).sort_values(["date", "state"
+                                                         ]).reset_index()
     dff["rolling_case_growth_per_100K"] = dff.groupby(
         'state')['case_growth_per_100K'].transform(
             lambda s: s.rolling(rolling_days, min_periods=1).mean())
     dff["rolling_new_cases"] = dff.groupby('state')['New Cases'].transform(
         lambda s: s.rolling(rolling_days, min_periods=1).mean())
 else:
-
+    dff = memo_wrapper('deaths',
+                       states_and_counties).sort_values(["date", "state"
+                                                         ]).reset_index()
     dff["rolling_new_deaths_per_100K"] = dff.groupby(
         'state')['new_deaths_per_100K'].transform(
             lambda s: s.rolling(rolling_days, min_periods=1).mean())
