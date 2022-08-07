@@ -73,7 +73,7 @@ with st.sidebar:
 ***
 The source code for this streamlit version of my covid case app is [available on github](https://github.com/astrowonk/covid_streamlit). 
 
-This streamlit data shares data with the [Dash version](https://marcoshuerta.com/dash/covid/), via a simple private REST API implementation running [on a feature branch](https://github.com/astrowonk/covid_dash/tree/api).    
+This streamlit data shares data with the [Dash version](https://marcoshuerta.com/dash/covid/), via a simple private [REST API](https://github.com/astrowonk/covid_dash/blob/main/rest_api.py).    
 
 
     """)
@@ -92,7 +92,9 @@ else:
     hover_data = ['date', 'rolling_new_deaths_per_100K', 'new_deaths_per_100K']
     cases = False
 
-states_and_counties = sorted(states + counties) # sort to so the singleton decorator doesn't think Texas,Virginia is different than Virginia,Texas
+states_and_counties = sorted(
+    states + counties
+)  # sort to so the singleton decorator doesn't think Texas,Virginia is different than Virginia,Texas
 
 if len(states_and_counties) > 15:
     #quietly limiting the length of the list to 15
