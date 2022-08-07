@@ -92,7 +92,7 @@ else:
     hover_data = ['date', 'rolling_new_deaths_per_100K', 'new_deaths_per_100K']
     cases = False
 
-states_and_counties = states + counties
+states_and_counties = sorted(states + counties) # sort to so the singleton decorator doesn't think Texas,Virginia is different than Virginia,Texas
 
 if len(states_and_counties) > 15:
     #quietly limiting the length of the list to 15
