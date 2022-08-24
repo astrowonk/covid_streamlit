@@ -41,7 +41,7 @@ class apiLoader:
 myDataLoader = apiLoader()
 
 
-@st.experimental_singleton()
+@st.experimental_memo(ttl=3600)
 def data_load_wrapper(data_type, regions=None):
 
     if data_type == 'all_counties':
