@@ -1,6 +1,6 @@
 ## Covid Case Counts with Streamlit
 
-### [See the app running live here on Streamlit Cloud](https://astrowonk-covid-streamlit-covid-streamlit-eis1xz.streamlitapp.com).
+### [See the app running live here on Streamlit Cloud](https://covidcases.streamlitapp.com).
 
 This is the source code for the [streamlit](https://streamlit.io) version of my [Covid Case Growth dash app](https://github.com/astrowonk/covid_dash), which you can see running live [here](https://marcoshuerta.com/dash/covid/).
 
